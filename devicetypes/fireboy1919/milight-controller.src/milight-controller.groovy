@@ -1,7 +1,7 @@
 /**
  *  MiLight / EasyBulb / LimitlessLED Light Controller
  *
- *  Copyright 2017  Rusty Phillips rusty dot phillips at gmail dot com
+ *  Copyright 2015 Jared Jensen / jared /at/ cloudsy /dot/ com
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -97,8 +97,12 @@ def setLevel(percentage, boolean sendHttp = true) {
 }
 
 def setColor(value, boolean sendHttp = true) { 
-    	def h = value.hue
-        sendEvent(name: 'color', value: h, data: [sendReq: sendHttp])
+    if(value.red == 255 && value.green == 255 && value.blue == 255) {
+    	whiten()
+    }
+    else {
+    	sendEvent(name: 'color', value: value.red + "," + value.green + "," + value.blue, data: [sendReq: sendHttp])
+    }
 	return sendEvent(name: 'switch', value: "on", data: [sendReq: sendHttp])
 }
 

@@ -35,7 +35,7 @@ def nameMiLights() {
 	dynamicPage(name: "nameMiLights", title: "MiLight Wifi Hub Setup", uninstall: true, install: true) {
         section("Light") {
             input "miLightName", "text", title: "Light name", description: "i.e. Living Room", required: true, submitOnChange: false
-            input "code", "number", title: "Code", required: true, description: "Optional: will be autoassigned"
+            input "code", "number", title: "Code", required: true, description: "Group Value"
             input "lightType", "enum", title: "Bulb Type", required: true, options: ['rgbw', 'cct', 'rgb_cct'], defaultValue: 'rgbw'
         }
 	}
@@ -157,14 +157,12 @@ def switchLevelHandler(evt) {
 
 def switchColorHandler(evt) {
 	// Adapted from HA Bridge.
-    log.debug("Hue: " + evt.value)
-    def val = (int)((256 + 26 - Math.floor((Float.parseFloat(evt.value) / 100)* 255)) % 256);
-    def body = ["hue": val.toString() ]
-
+    //  log.debug(evt.value["saturation"])
+    //def hue = (int)((360 + Math.floor((Float.parseFloat(parseResult.hue) / 100)* 360)) % 360)
+    def body = ["color": evt.value ]
+    
 	if(parent.parent.settings.isDebug) { log.debug "color set! ${settings.code} / ${evt.device.name} / ${evt.value}" }
-         
     httpCall(body, parent.settings.ipAddress, settings.code, evt.device)
-
 }
 
 def httpCall(body, ipAddress, code, device) {
